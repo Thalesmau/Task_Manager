@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Dashboard } from "../page/dashboard";
 import { SignIn } from "../page/signIn";
 import { AuthLayout } from "../_layout/AuthLayout";
-import { Register } from "../page/register";
+import { Register } from "../page/dashboard/register";
 import { PrivateLayout } from "../_layout/PrivateLayout";
 
 

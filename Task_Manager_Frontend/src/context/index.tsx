@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await api.post("Auth/signIn", {
+      const response = await api.post("Auth/SignIn", {
         email,
         password,
       })
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (name: string, email: string, password: string) => {
     try {
-      const response = await api.post("Auth/register", { name, email, password });
+      const response = await api.post("Auth/Register", { name, email, password });
       if (response.data.token) {
         localStorage.setItem("authToken", response.data.token);
         setIsAuthenticated(true);

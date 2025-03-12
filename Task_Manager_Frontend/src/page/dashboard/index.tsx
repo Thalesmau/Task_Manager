@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Column, Task } from "../../types"
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import { Column as ColumnComponent } from "../../components/Column";
 import { useAuth } from "../../hook/useAuth";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../lib/axios";
 
 const COLUMNS: Column[] = [
   { id: 'TODO', title: 'To do' },
@@ -11,39 +12,36 @@ const COLUMNS: Column[] = [
   { id: 'DONE', title: 'Done' }
 ]
 
-const INITIAL_TASKS: Task[] = [
-  {
-    id: '1',
-    title: 'Research Progress',
-    description: 'Take out the garbage',
-    status: 'TODO'
-  },
-  {
-    id: '2',
-    title: 'Research',
-    description: 'Watch my favorite show',
-    status: 'TODO'
-  },
-  {
-    id: '3',
-    title: 'Progress',
-    description: 'Charge my phone',
-    status: 'IN_PROGRESS'
-  },
-  {
-    id: '4',
-    title: 'Testing',
-    description: 'Cook dinner',
-    status: 'DONE'
-  }
-]
-
-
 export function Dashboard() {
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
-  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const response = await api.get<Task[]>(`TaskCard/User/${1}`);
+
+        setTasks(response.data);
+
+      } catch {
+        console.error("Error fetching tasks:");
+      }
+    }
+
+    fetchTasks();
+  }, [])
+
+  const handleAddTask = async (newTask: Omit<Task, "id">) => {
+    try {
+      const response = await api.post<Task>('TaskCard', newTask);
+
+      setTasks([...tasks, response.data]);
+    } catch {
+      console.error("Error adding task:");
+    }
+  };
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -55,8 +53,18 @@ export function Dashboard() {
     const taskId = active.id as string;
     const newStatus = over.id as Task['status'];
 
-    setTasks(() => tasks.map(task => task.id === taskId ?
-      { ...task, status: newStatus } : task));
+    try {
+      api.put(`/TaskCard/UpdateStatusTask/${taskId}`, { status: newStatus });
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+    } catch {
+      console.error("Error moving task:");
+    }
+
   }
 
   function handleSignOut() {
@@ -79,7 +87,9 @@ export function Dashboard() {
             return <ColumnComponent
               key={column.id}
               column={column}
-              tasks={tasks.filter((task) => task.status === column.id)}>
+              tasks={tasks.filter((task) => task.status === column.id)}
+              onAddTask={handleAddTask}
+            >
             </ColumnComponent>
           })}
         </DndContext>

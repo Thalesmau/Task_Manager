@@ -8,4 +8,14 @@ export type Task = {
   title: string
   description: string
   status: string
+  createdAt?: string
+  completedAt?: string
+  userId?: number
+}
+
+export type TaskCardRequest = {
+  title: string
+  description: string
+  status: string
+  userId: number
 }
