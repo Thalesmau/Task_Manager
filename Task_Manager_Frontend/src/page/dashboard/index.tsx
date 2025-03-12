@@ -13,7 +13,7 @@ const COLUMNS: Column[] = [
 ]
 
 export function Dashboard() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -21,7 +21,7 @@ export function Dashboard() {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await api.get<Task[]>(`TaskCard/User/${1}`);
+        const response = await api.get<Task[]>(`TaskCard/User/${user?.token.user?.id}`);
 
         setTasks(response.data);
 
@@ -31,7 +31,7 @@ export function Dashboard() {
     }
 
     fetchTasks();
-  }, [])
+  }, [user?.token.user?.id])
 
   const handleAddTask = async (newTask: Omit<Task, "id">) => {
     try {

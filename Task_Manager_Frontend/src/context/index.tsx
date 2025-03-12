@@ -1,11 +1,13 @@
 import { createContext, useState, type ReactNode } from "react";
 import { api } from "../lib/axios";
+import type { User } from "@/types";
 
 type AuthContextType = {
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   signOut: () => void;
+  user: User | null;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -18,9 +20,11 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const [user, setUser] = useState<User | null>(null);
+
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await api.post("Auth/SignIn", {
+      const response = await api.post<User>("Auth/SignIn", {
         email,
         password,
       })
@@ -29,8 +33,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         throw new Error("Invalid credentials");
       }
 
-      if (response.data.token) {
-        localStorage.setItem("authToken", response.data.token);
+      if (response.data.token.token) {
+        localStorage.setItem("authToken", response.data.token.token);
+        setUser(response.data);
         setIsAuthenticated(true);
       }
 
@@ -44,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const response = await api.post("Auth/Register", { name, email, password });
       if (response.data.token) {
-        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("authToken", response.data.token.token);
         setIsAuthenticated(true);
       }
     } catch (error) {
@@ -59,7 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, signIn, register, signOut }}>
+    <AuthContext.Provider value={{ isAuthenticated, signIn, register, signOut, user }}>
       {children}
     </AuthContext.Provider>
   );

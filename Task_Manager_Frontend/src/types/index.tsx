@@ -19,3 +19,14 @@ export type TaskCardRequest = {
   status: string
   userId: number
 }
+
+export type User = {
+  token: {
+    token: string
+    user?: {
+      id: number
+      name: string
+      email: string
+    }
+  }
+}
