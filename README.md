@@ -91,7 +91,7 @@ npm install
   - Open the .env file (or create one if it doesn’t exist) in the frontend directory.
   - Add the following line to set the API URL
 ```bash
-VITE_BASE_URL=http://localhost:5000/api
+VITE_BASE_URL=https://localhost:5000/api
 ```
 
 4. Start the development server:
