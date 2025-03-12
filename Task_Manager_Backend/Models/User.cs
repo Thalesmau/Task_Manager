@@ -8,7 +8,5 @@ public class User
     public string? Password { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime LastModifiedDate { get; set; }
-    public ICollection<Board>? Boards { get; set; }
     public ICollection<TaskCard>? TaskCards{ get; set; }
-
 }

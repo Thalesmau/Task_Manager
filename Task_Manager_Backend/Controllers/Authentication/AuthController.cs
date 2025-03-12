@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost("register")]
+    [HttpPost("Register")]
     public async Task<IActionResult> Register(UserRegisterDTO userDTO)
     {
         try
@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         }
     }
 
-    [HttpPost("signIn")]
+    [HttpPost("SignIn")]
     public async Task<IActionResult> SignIn(UserSignInDTO userDTO)
     {
         try

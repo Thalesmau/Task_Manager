@@ -5,8 +5,8 @@ using System.Security.Claims;
 using System.Text;
 
 using Task_Manager_Backend.Data;
-using Task_Manager_Backend.DTOs;
 using Task_Manager_Backend.Models;
+using Task_Manager_Backend.DTOs;
 
 namespace Task_Manager_Backend.Services.Authentication;
 
