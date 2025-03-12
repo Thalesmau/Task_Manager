@@ -5,5 +5,5 @@ namespace Task_Manager_Backend.Services.Authentication;
 public interface IAuthService
 {
     Task<string> Register(UserRegisterDTO userDTO);
-    Task<string> SignIn(UserSignInDTO userDTO);
+    Task<AuthResponseDTO> SignIn(UserSignInDTO userDTO);
 }

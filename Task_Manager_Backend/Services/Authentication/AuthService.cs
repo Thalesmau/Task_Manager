@@ -47,7 +47,7 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<string> SignIn(UserSignInDTO userDTO)
+    public async Task<AuthResponseDTO> SignIn(UserSignInDTO userDTO)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
 
@@ -58,7 +58,16 @@ public class AuthService : IAuthService
 
         var token = GenerateJwtToken(user);
 
-        return token;
+        return new AuthResponseDTO
+        {
+            Token = token,
+            User = new UserDTO
+            {
+                Id = user.Id,
+                Name = user.Username,
+                Email = user.Email
+            }
+        };
     }
 
     private string GenerateJwtToken(User user)
