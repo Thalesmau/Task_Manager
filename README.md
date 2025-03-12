@@ -53,8 +53,13 @@ git clone https://github.com/Thalesmau/Task_Manager.git
 cd Task_Manager\Task_Manager_Backend
 ```
 
-3. Update the database connection string in appsettings.json:
+3. Update the database connection string and jwt in appsettings.json:
 ```bash
+"Jwt": {
+  "Key": "your-scret-key",
+  "Issuer": "Task_Manager_Backend",
+  "Audience": "Task_Manager_Frontend"
+},
 "ConnectionStrings": {
     "DefaultConnection": "Server=your-server;Database=your-database;Uid=your-user;Pwd=your-password;"
 }
@@ -82,7 +87,14 @@ cd Task_Manager\Task_Manager_Frontend
 npm install
 ```
 
-3. Start the development server:
+3. Configure the API endpoint:
+  - Open the .env file (or create one if it doesn’t exist) in the frontend directory.
+  - Add the following line to set the API URL
+```bash
+VITE_BASE_URL=https://localhost:5000/api
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 ```
