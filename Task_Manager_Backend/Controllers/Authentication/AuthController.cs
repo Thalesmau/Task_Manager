@@ -35,8 +35,8 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var token = await _authService.SignIn(userDTO);
-            return Ok(new { Token = token });
+            var user = await _authService.SignIn(userDTO);
+            return Ok(user);
         }
         catch (Exception ex)
         {

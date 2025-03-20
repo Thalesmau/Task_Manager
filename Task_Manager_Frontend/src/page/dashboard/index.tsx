@@ -21,17 +21,18 @@ export function Dashboard() {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await api.get<Task[]>(`TaskCard/User/${user?.token.user?.id}`);
+        if (user?.id) {
+          const response = await api.get<Task[]>(`TaskCard/User/${user?.id}`);
 
-        setTasks(response.data);
-
+          setTasks(response.data);
+        }
       } catch {
         console.error("Error fetching tasks:");
       }
     }
 
     fetchTasks();
-  }, [user?.token.user?.id])
+  }, [user?.id])
 
   const handleAddTask = async (newTask: Omit<Task, "id">) => {
     try {
@@ -89,6 +90,7 @@ export function Dashboard() {
               column={column}
               tasks={tasks.filter((task) => task.status === column.id)}
               onAddTask={handleAddTask}
+              userId={user?.id}
             >
             </ColumnComponent>
           })}

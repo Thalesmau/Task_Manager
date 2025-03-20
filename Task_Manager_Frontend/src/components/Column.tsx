@@ -7,9 +7,10 @@ type ColumnProps = {
   column: Column
   tasks: Task[]
   onAddTask: (task: Omit<Task, "id">) => Promise<void>
+  userId: number | undefined
 }
 
-export function Column({ column, tasks, onAddTask }: ColumnProps) {
+export function Column({ column, tasks, onAddTask, userId }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
@@ -21,7 +22,7 @@ export function Column({ column, tasks, onAddTask }: ColumnProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddTask = async () => {
-    if (!newTaskTitle.trim() || !newTaskDescription.trim()) {
+    if (!newTaskTitle.trim() || !newTaskDescription.trim() || !userId) {
       return;
     }
 
@@ -32,7 +33,7 @@ export function Column({ column, tasks, onAddTask }: ColumnProps) {
         title: newTaskTitle,
         description: newTaskDescription,
         status: column.id,
-        userId: 1
+        userId: userId
       });
       setNewTaskTitle("");
       setNewTaskDescription("");

@@ -1,11 +1,11 @@
-import { createContext, useState, type ReactNode } from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "../lib/axios";
-import type { User } from "@/types";
+import { User } from "@/types";
 
 type AuthContextType = {
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
   signOut: () => void;
   user: User | null;
 }
@@ -19,7 +19,6 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const [user, setUser] = useState<User | null>(null);
 
   const signIn = async (email: string, password: string) => {
@@ -33,23 +32,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         throw new Error("Invalid credentials");
       }
 
-      if (response.data.token.token) {
-        localStorage.setItem("authToken", response.data.token.token);
+      if (response.data) {
+
+        localStorage.setItem("authToken", response.data.token);
+
+        localStorage.setItem("user", JSON.stringify(response.data))
+
         setUser(response.data);
+
         setIsAuthenticated(true);
       }
 
     } catch (error) {
       console.error(error);
     }
-
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (username: string, email: string, password: string) => {
     try {
-      const response = await api.post("Auth/Register", { name, email, password });
+      const response = await api.post("Auth/Register", { username, email, password });
       if (response.data.token) {
-        localStorage.setItem("authToken", response.data.token.token);
+        localStorage.setItem("authToken", response.data.token);
         setIsAuthenticated(true);
       }
     } catch (error) {
@@ -60,8 +63,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
   };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, signIn, register, signOut, user }}>

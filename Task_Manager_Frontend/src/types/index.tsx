@@ -20,13 +20,9 @@ export type TaskCardRequest = {
   userId: number
 }
 
-export type User = {
-  token: {
-    token: string
-    user?: {
-      id: number
-      name: string
-      email: string
-    }
-  }
+export interface User {
+  token: string
+  id: number
+  name: string
+  email: string
 }

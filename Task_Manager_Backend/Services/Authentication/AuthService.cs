@@ -60,13 +60,10 @@ public class AuthService : IAuthService
 
         return new AuthResponseDTO
         {
+            Id = user.Id,
+            Email = user.Email,
+            Name = user.Username,
             Token = token,
-            User = new UserDTO
-            {
-                Id = user.Id,
-                Name = user.Username,
-                Email = user.Email
-            }
         };
     }
 
